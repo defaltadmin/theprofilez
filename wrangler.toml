@@ -1,0 +1,7 @@
+# TheProfilez — Cloudflare Pages configuration
+name = "theprofilez"
+compatibility_date = "2026-11-07"
+
+[deploy]
+# Static site — no build step, deploy repo root
+project = "theprofilez"

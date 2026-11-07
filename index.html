@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="TheProfilez — personal profile and link hub of Mohammed Siddiqui." />
+  <meta name="theme-color" content="#0ea5e9" />
+  <title>TheProfilez — Mohammed Siddiqui</title>
+  <link rel="icon" type="image/png" href="assets/images/logo.png" />
+  <link rel="preload" as="font" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <a class="skip-link" href="#links">Skip to links</a>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" aria-label="TheProfilez home">
+        <img class="brand-mark" src="assets/images/logo.png" alt="" width="36" height="36" />
+        <span class="brand-word">TheProfilez</span>
+      </a>
+    </div>
+  </header>
+  <main>
+    <section class="hero" aria-labelledby="hero-heading">
+      <div class="container hero-inner">
+        <div class="profile">
+          <img class="profile-img" src="assets/images/logo.png" alt="Profile" />
+          <div class="profile-ring"></div>
+        </div>
+        <h1 id="hero-heading" class="hero-title">Mohammed Siddiqui</h1>
+        <p class="hero-tagline">Builder &middot; Founder &middot; <span class="highlight">MSC Arabia</span></p>
+        <p class="hero-sub">Link-in-bio — projects, contacts, and everything I'm working on.</p>
+        <nav class="link-group" aria-label="Quick links">
+          <a class="link-card" href="#projects"><span class="link-icon">&#128214;</span><span>Projects</span></a>
+          <a class="link-card" href="#contact"><span class="link-icon">&#9993;</span><span>Contact</span></a>
+          <a class="link-card" href="https://mscarabia.com" target="_blank" rel="noopener"><span class="link-icon">&#128065;</span><span>MSC Arabia</span></a>
+        </nav>
+      </div>
+    </section>
+
+    <section id="links" class="links" aria-labelledby="links-heading">
+      <div class="container">
+        <h2 id="links-heading" class="section-title">Links</h2>
+        <div class="link-list">
+          <a class="link-item" href="https://github.com/defaltadmin" target="_blank" rel="noopener">
+            <span class="item-icon">&#128293;</span>
+            <span class="item-label">GitHub</span>
+            <span class="item-value">defaltadmin</span>
+          </a>
+          <a class="link-item" href="https://mscarabia.com" target="_blank" rel="noopener">
+            <span class="item-icon">&#127968;</span>
+            <span class="item-label">MSC Arabia</span>
+            <span class="item-value">Managed services &amp; manpower</span>
+          </a>
+          <a class="link-item" href="https://donttouchpurple.com" target="_blank" rel="noopener">
+            <span class="item-icon">&#128165;</span>
+            <span class="item-label">Don't Touch Purple</span>
+            <span class="item-value">Reaction game</span>
+          </a>
+          <a class="link-item" href="https://world-prayer-times.pages.dev" target="_blank" rel="noopener">
+            <span class="item-icon">&#128337;</span>
+            <span class="item-label">World Prayer Times</span>
+            <span class="item-value">PWA prayer times</span>
+          </a>
+          <a class="link-item" href="mailto:info.mscarabia@gmail.com">
+            <span class="item-icon">&#9993;</span>
+            <span class="item-label">Email</span>
+            <span class="item-value">info.mscarabia@gmail.com</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="projects" class="projects bg-muted" aria-labelledby="projects-heading">
+      <div class="container">
+        <h2 id="projects-heading" class="section-title">Projects</h2>
+        <div class="card-grid">
+          <article class="project-card">
+            <h3>TheProfilez</h3>
+            <p>Personal profile and link-in-bio page (this site).</p>
+            <a class="card-link" href="#" aria-current="page">View site</a>
+          </article>
+          <article class="project-card">
+            <h3>MSC Arabia</h3>
+            <p>Managed services, manpower, and IT solutions in Saudi Arabia.</p>
+            <a class="card-link" href="https://mscarabia.com" target="_blank" rel="noopener">Visit site</a>
+          </article>
+          <article class="project-card">
+            <h3>Don't Touch Purple</h3>
+            <p>Fast-paced reaction game built with React + Vite.</p>
+            <a class="card-link" href="https://donttouchpurple.com" target="_blank" rel="noopener">Play game</a>
+          </article>
+          <article class="project-card">
+            <h3>World Prayer Times</h3>
+            <p>Vanilla JS PWA for prayer times, hosted on Cloudflare.</p>
+            <a class="card-link" href="https://world-prayer-times.pages.dev" target="_blank" rel="noopener">Open app</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="contact" aria-labelledby="contact-heading">
+      <div class="container">
+        <h2 id="contact-heading" class="section-title">Get in touch</h2>
+        <p class="contact-intro">Open to collaboration on web products and managed services.</p>
+        <div class="contact-links">
+          <a class="btn btn-primary" href="mailto:info.mscarabia@gmail.com">&#9993; Send email</a>
+          <a class="btn btn-outline" href="https://mscarabia.com" target="_blank" rel="noopener">&#128065; MSC Arabia site</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span class="copyright">&copy; <span id="year"></span> Mohammed Siddiqui. Built with Cloudflare Pages.</span>
+      <a class="footer-link" href="#" target="_blank" rel="noopener">Privacy</a>
+    </div>
+  </footer>
+
+  <script src="assets/js/app.js"></script>
+</body>
+</html>
