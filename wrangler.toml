@@ -5,3 +5,4 @@ compatibility_date = "2026-11-07"
 [deploy]
 # Static site — no build step, deploy repo root
 project = "theprofilez"
+pages_build_output_dir = "."

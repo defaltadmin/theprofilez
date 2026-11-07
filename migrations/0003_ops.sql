@@ -1,0 +1,5 @@
+
+CREATE TABLE audit_log(id INTEGER PRIMARY KEY, at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, actor TEXT NOT NULL, action TEXT NOT NULL, entity TEXT NOT NULL, entity_id TEXT, detail TEXT NOT NULL DEFAULT '{}' CHECK(json_valid(detail)));
+CREATE TABLE contact_messages(id INTEGER PRIMARY KEY, at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, name TEXT NOT NULL, email TEXT NOT NULL, message TEXT NOT NULL);
+CREATE TABLE takedown_requests(id INTEGER PRIMARY KEY, at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, profile_id INTEGER REFERENCES profiles(id), email TEXT NOT NULL, reason TEXT NOT NULL, status TEXT NOT NULL DEFAULT 'pending' CHECK(status IN ('pending','reviewing','resolved')));
+CREATE TABLE social_posts(id INTEGER PRIMARY KEY, profile_id INTEGER REFERENCES profiles(id), platform TEXT NOT NULL, lang TEXT NOT NULL CHECK(lang IN ('en','ar')), caption TEXT, card_key TEXT, status TEXT NOT NULL DEFAULT 'queued' CHECK(status IN ('queued','posted','failed')), scheduled_at TEXT, posted_at TEXT, external_id TEXT, error TEXT);

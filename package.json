@@ -1,0 +1,20 @@
+{
+  "name": "theprofilez",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev --env local",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "hono": "^4.10.0"
+  },
+  "devDependencies": {
+    "wrangler": "4.100.0",
+    "typescript": "^5.9.0",
+    "vitest": "~3.2.0",
+    "@cloudflare/vitest-pool-workers": "0.12.21",
+    "@cloudflare/workers-types": "^4.20251101.0"
+  }
+}
