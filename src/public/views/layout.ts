@@ -31,9 +31,9 @@ export function layout(lang: 'en' | 'ar', dir: 'ltr' | 'rtl', title: string, bod
  <meta name="viewport" content="width=device-width,initial-scale=1" />
  <title>${escapeHtml(title)} — The Profilez</title>
  <link rel="icon" type="image/png" href="/brand/favicon.png" />
- <link rel="preload" as="font" href="/fonts/inter-variable-latin-400.woff2" />
- <link rel="preload" as="font" href="/fonts/ibm-plex-sans-arabic-arabic-400.woff2" />
- <link rel="preload" as="font" href="/fonts/source-serif-4-latin-400.woff2" />
+ <link rel="preload" as="font" href="/fonts/inter-latin-wght-normal.woff2" />
+ <link rel="preload" as="font" href="/fonts/ibm-plex-sans-arabic-arabic-400-normal.woff2" />
+ <link rel="preload" as="font" href="/fonts/source-serif-4-latin-400-normal.woff2" />
  <link rel="stylesheet" href="/css/site.css" />
  <style>${CRITICAL_CSS}</style>
 </head>
