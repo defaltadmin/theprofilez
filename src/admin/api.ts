@@ -1,10 +1,14 @@
 import { Hono } from 'hono';
-import type { AppEnv } from '../env';
+import type { AppEnv, Env } from '../env';
 import { validateProfile, publishError } from '../lib/validate';
 import { sanitize } from '../lib/sanitize';
 import { slugify, uniqueSlug } from '../lib/slug';
 import { audit, profileById } from '../lib/db';
 import { purgeProfile } from '../lib/cache';
+async function safePurge(c: any, env: Env, profile: Record<string,unknown>): Promise<void> {
+ try { await purgeProfile(env, profile); }
+ catch { c.header('X-Cache-Purge','failed'); console.error('Cache purge failed'); }
+}
 export const api = new Hono<AppEnv>();
 api.get('/meta',async c=>{
  const [sectors,cities,tags]=await Promise.all(['SELECT * FROM sectors ORDER BY sort_order','SELECT * FROM cities ORDER BY name_en','SELECT * FROM tags ORDER BY name_en'].map(sql=>c.env.DB.prepare(sql).all()));
@@ -42,7 +46,7 @@ api.on(['POST','PUT'],['/profiles','/profiles/:id'],async c=>{
  try {await c.env.DB.batch([statement,c.env.DB.prepare('DELETE FROM profile_tags WHERE profile_id = ?').bind(profileId),...tags.map(tag=>c.env.DB.prepare('INSERT INTO profile_tags VALUES(?,?)').bind(profileId,tag)),audit(c.env.DB,c.get('email'),updating?'update':'create','profile',String(profileId))]);}
  catch {return c.json({error:'Could not save profile; please retry'},409);}
  const result=await profileById(c.env.DB,String(profileId));
- if(updating) { if(previous) await purgeProfile(c.env,previous); await purgeProfile(c.env,result!); }
+ if(updating) { if(previous) await safePurge(c,c.env,previous); await safePurge(c,c.env,result!); }
  return c.json({...result,tags},updating?200:201);
 });
 api.post('/profiles/:id/:action',async c=>{
@@ -50,13 +54,13 @@ api.post('/profiles/:id/:action',async c=>{
  const p=await profileById(c.env.DB,c.req.param('id')); if(!p) return c.json({error:'Not found'},404);
  if(action==='publish') {const error=publishError(p);if(error) return c.json({error},400);}
  await c.env.DB.batch([c.env.DB.prepare("UPDATE profiles SET status = ?, published_at = CASE WHEN ? = 'published' THEN COALESCE(published_at,CURRENT_TIMESTAMP) ELSE published_at END, updated_at = CURRENT_TIMESTAMP WHERE id = ?").bind(action==='publish'?'published':'draft',action==='publish'?'published':'draft',p.id),audit(c.env.DB,c.get('email'),action,'profile',String(p.id))]);
- await purgeProfile(c.env,p);
+ await safePurge(c,c.env,p);
  return c.json(await profileById(c.env.DB,String(p.id)));
 });
 api.delete('/profiles/:id',async c=>{
  const p=await profileById(c.env.DB,c.req.param('id'));if(!p) return c.json({error:'Not found'},404);
  await c.env.DB.batch([c.env.DB.prepare('UPDATE profiles SET deleted_at = CURRENT_TIMESTAMP, updated_at = CURRENT_TIMESTAMP WHERE id = ?').bind(p.id),audit(c.env.DB,c.get('email'),'delete','profile',String(p.id))]);
- await purgeProfile(c.env,p);return c.json({ok:true});
+ await safePurge(c,c.env,p);return c.json({ok:true});
 });
 api.post('/upload',async c=>{
  if(Number(c.req.header('Content-Length') || 0)>2000000) return c.json({error:'Upload too large'},413);

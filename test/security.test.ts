@@ -8,8 +8,9 @@ import { validateProfile,publishError } from '../src/lib/validate';
 import { languageAvailable } from '../src/lib/i18n';
 import { verifyAccess } from '../src/lib/access-jwt';
 import { constantTimeEqual } from '../src/lib/csrf';
+vi.mock('../src/lib/cache',()=>({purgeProfile:vi.fn(()=>{throw new Error('purge failed');})}));
 declare module 'cloudflare:test' { interface ProvidedEnv extends Env { TEST_MIGRATIONS: D1Migration[] } }
-const config={...env,ADMIN_HOST:'admin.localhost',PUBLIC_HOST:'localhost',DEV_AUTH_BYPASS:'1',DEV_USER_EMAIL:'editor@example.test',ACCESS_TEAM_DOMAIN:'https://test.cloudflareaccess.com',ACCESS_AUD:'test-aud'};
+const config={...env,ADMIN_HOST:'admin.localhost',PUBLIC_HOST:'localhost',DEV_AUTH_BYPASS:'1',DEV_USER_EMAIL:'editor@example.test',ADMIN_EMAILS:'editor@example.test',ACCESS_TEAM_DOMAIN:'https://test.cloudflareaccess.com',ACCESS_AUD:'test-aud'};
 beforeAll(async()=>{await applyD1Migrations(env.DB,env.TEST_MIGRATIONS);await env.DB.batch([env.DB.prepare("INSERT INTO sectors VALUES(1,'technology','Technology','التقنية',0)"),env.DB.prepare("INSERT INTO cities VALUES(1,'riyadh','Riyadh','الرياض')"),env.DB.prepare("INSERT INTO tags VALUES(1,'innovation','Innovation','الابتكار')")]);});
 afterEach(()=>vi.restoreAllMocks());
 async function call(path:string,init:RequestInit={},bindings=config){
@@ -24,6 +25,7 @@ describe('sanitizer',()=>{
  it('preserves only safe links',async()=>{const s=await sanitize('<a href="https://example.test" target="_blank" id="x">x</a><a href="mailto:a@example.test">mail</a>');expect(s).toContain('href="https://example.test/"');expect(s).toContain('mailto:a@example.test');expect(s).not.toContain('target=');expect(s).toContain('rel="noopener noreferrer nofollow"');});
  it('drops comments, attributes and embedded payloads',async()=>{const s=await sanitize('<!--secret--><p onmouseover="x" style="x">safe<img src=x onerror=alert(1)></p><svg><a href="javascript:x">bad</a></svg>');expect(s).toBe('<p>safe</p>');});
  it('handles malformed XSS',async()=>{const s=await sanitize('<IMG """><SCRIPT>alert("XSS")</SCRIPT>"><p class=x>Hello</p>');expect(s).not.toMatch(/script|onerror|class=/i);expect(s).toContain('Hello');});
+  it('drops xmp and textarea content',async()=>{const s=await sanitize('<xmp><img src=x onerror=alert(1)></xmp><textarea><script>x</script></textarea>');expect(s).not.toContain('<img');expect(s).not.toContain('onerror');expect(s).not.toContain('<script');});
 });
 describe('slug and validation',()=>{
  it('normalizes Latin and Arabic names',()=>{expect(slugify('Noura Al Safa!')).toBe('noura-al-safa');expect(slugify('ريم')).toBe('rym');expect(slugify('')).toBe('profile');expect(slugify('Élodie')).toBe('elodie');});
@@ -67,5 +69,6 @@ describe('CSRF and publication API',()=>{
  const logs=await env.DB.prepare('SELECT * FROM audit_log WHERE entity_id = ?').bind(String(p.id)).all();expect(logs.results.length).toBe(5);expect(logs.results.every(l=>l.actor==='editor@example.test')).toBe(true);
  });
  it('rejects non-WebP uploads',async()=>{const form=new FormData();form.append('large',new Blob(['not a webp']), 'large.webp');form.append('small',new Blob(['not a webp']), 'small.webp');const response=await call('/api/upload',{method:'POST',headers:{Origin:writeHeaders.Origin,Cookie:writeHeaders.Cookie,'X-CSRF-Token':'test-token'},body:form});expect(response.status).toBe(400);});
+  it('returns success when cache purge fails',async()=>{const body={name_en:'Test Person',title_en:'Director',summary_en:'Intro',body_en:'<p>Story</p>',sector_id:1,city:'riyadh',tags:[1],consent_confirmed:1,photo_alt:'alt'};const created=await call('/api/profiles',{method:'POST',headers:writeHeaders,body:JSON.stringify(body)});expect(created.status).toBe(201);const p=await created.json() as {id:number};const published=await call('/api/profiles/'+p.id+'/publish',{method:'POST',headers:writeHeaders});expect(published.status).toBe(200);expect(published.headers.get('X-Cache-Purge')).toBe('failed');});
  it('returns empty search and 404 for nonexistent records',async()=>{expect(await (await call('/api/profiles?q=does-not-exist')).json()).toEqual([]);expect((await call('/api/profiles/99999')).status).toBe(404);});
 });

@@ -1,5 +1,7 @@
 {
   "name": "theprofilez",
+  "workers_dev": false,
+  "preview_urls": false,
   "env": {
     "local": {
       "name": "theprofilez-local",

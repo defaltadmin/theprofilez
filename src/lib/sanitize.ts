@@ -1,5 +1,5 @@
 const allowed = new Set(['p','br','h2','h3','strong','em','ul','ol','li','a']);
-const drop = new Set(['script','style','iframe','object','embed','svg','math','template','noscript','form']);
+const drop = new Set(['script','style','iframe','object','embed','svg','math','template','noscript','form','textarea','title','xmp','noembed','noframes','plaintext','select','option','button','input','link','meta','base']);
 const mapped: Record<string,string> = {b:'strong',i:'em',h1:'h2',h4:'h3',h5:'h3',h6:'h3'};
 export async function sanitize(html: string): Promise<string> {
  const rewriter = new HTMLRewriter().on('*',{
