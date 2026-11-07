@@ -1,0 +1,149 @@
+/* TheProfilez — public site styles */
+
+:root {
+  --color-navy: #0B2140;
+  --color-gold: #C9A04A;
+  --color-paper: #ffffff;
+  --color-ink: #24364a;
+  --color-muted: #73808d;
+  --color-line: #e5e9ed;
+  --radius: 8px;
+
+  --font-headline: 'Source Serif 4', serif;
+  --font-body: 'Inter', sans-serif;
+  --font-arabic: 'IBM Plex Sans Arabic', sans-serif;
+
+  --max-width: 720px;
+}
+
+html[dir="rtl"] body {
+  font-family: var(--font-arabic), var(--font-body);
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--color-ink);
+  background: var(--color-paper);
+  line-height: 1.6;
+}
+
+a { color: var(--color-navy); }
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--color-line);
+}
+
+.brand {
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+  color: var(--color-navy);
+}
+
+.lang-toggle {
+  font-size: 0.9rem;
+  color: var(--color-muted);
+}
+
+.lang-toggle a {
+  color: var(--color-gold);
+}
+
+.section-title {
+  font-family: var(--font-headline);
+  font-weight: 700;
+  font-size: 1.25rem;
+  margin: 2rem 0 1rem;
+  color: var(--color-navy);
+}
+
+.card {
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius);
+  background: var(--color-paper);
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.btn {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  border: 1px solid var(--color-navy);
+  background: var(--color-navy);
+  color: var(--color-paper);
+  border-radius: var(--radius);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:hover {
+  background: var(--color-gold);
+  border-color: var(--color-gold);
+}
+
+footer {
+  border-top: 1px solid var(--color-line);
+  padding: 2.5rem 0 1rem;
+  margin-top: 3rem;
+  color: var(--color-muted);
+  font-size: 0.9rem;
+}
+
+footer a {
+  color: var(--color-navy);
+  text-decoration: underline;
+}
+
+blockquote {
+  font-family: var(--font-headline);
+  font-size: 1.25rem;
+  color: var(--color-navy);
+  border-left: 3px solid var(--color-gold);
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+}
+
+@media (max-width: 480px) {
+  .container { padding: 0 1rem; }
+  .header-inner { flex-direction: column; gap: 0.75rem; align-items: stretch; }
+  .lang-toggle { text-align: center; }
+}
+
+/* Arabic-specific adjustments */
+html[dir="rtl"] blockquote {
+  border-left: none;
+  border-right: 3px solid var(--color-gold);
+  padding-left: 0;
+  padding-right: 1rem;
+}
+
+html[dir="rtl"] .lang-toggle a {
+  margin-left: 0.5rem;
+}
+
+html[dir="ltr"] .lang-toggle a {
+  margin-right: 0.5rem;
+}

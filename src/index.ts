@@ -29,6 +29,8 @@ adminApp.get('/admin/*',c=>c.env.ASSETS.fetch(c.req.raw));
 adminApp.get('/brand/*',c=>c.env.ASSETS.fetch(c.req.raw));
 app.get('/img/*',c=>image(c.req.raw,c.env));
 app.get('/brand/*',c=>c.env.ASSETS.fetch(c.req.raw));
+app.get('/css/*',c=>c.env.ASSETS.fetch(c.req.raw));
+app.get('/fonts/*',c=>c.env.ASSETS.fetch(c.req.raw));
 app.route('/',publicApp);
 app.onError((error,c)=>{console.error(error.message);return c.json({error:'An unexpected error occurred'},500);});
 export { app };
