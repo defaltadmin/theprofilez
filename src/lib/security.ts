@@ -4,3 +4,5 @@ export const securityHeaders:MiddlewareHandler<{Bindings:Env}>=async(c,next)=>{a
 export function csrf(c:any):boolean{const v=(c.req.header('Cookie')||'').split(';').map((x:string)=>x.trim()).find((x:string)=>x.startsWith('tp_csrf='))?.slice(8);return !!v&&v===c.req.header('X-CSRF-Token')&&/^[a-f0-9]{32,128}$/.test(v);}
 export function cleanText(v:unknown,n=5000):string{return typeof v==='string'?v.replace(/[\u0000-\u001f]/g,'').trim().slice(0,n):'';}
 export function safeUrl(v:unknown):string{const s=cleanText(v,2048);try{const u=new URL(s);return u.protocol==='https:'?u.toString():'';}catch{return '';}}
+
+export function isWebpImage(bytes:Uint8Array):boolean{return bytes.length>=16&&String.fromCharCode(...bytes.slice(0,4))==='RIFF'&&String.fromCharCode(...bytes.slice(8,12))==='WEBP';}
