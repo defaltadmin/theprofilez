@@ -7,6 +7,7 @@ type Vars = { adminEmail: string };
 const app = new Hono<{ Bindings: Env; Variables: Vars }>();
 app.use('*', securityHeaders);
 app.get('/health', c => c.json({ ok: true, service: 'theprofilez' }));
+app.get('/', c => c.req.header('host')?.split(':')[0] === (c.env.ADMIN_HOST || 'admin.theprofilez.com') ? c.redirect('/admin',302) : c.json({error:'Not found'},404));
 app.get('/media/:id/:file', async c => {
  const id=c.req.param('id'), file=c.req.param('file');
  if(!/^[0-9a-f-]{36}$/i.test(id)||!/^photo-[0-9a-f-]{36}\.webp$/i.test(file)) return c.notFound();
