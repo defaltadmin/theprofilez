@@ -27,7 +27,7 @@ describe('public editorial pages', () => {
     const html = await response.text();
     expect(response.status).toBe(200);
     expect(html).toContain('Discover people shaping what comes next.');
-    expect(html).toContain('THEPROFILEZ');
+    expect(html).toContain('THE<span>PROFILEZ</span>');
   });
 
   it('renders Arabic with right-to-left document direction', async () => {
