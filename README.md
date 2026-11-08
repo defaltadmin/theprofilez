@@ -1,94 +1,34 @@
 # TheProfilez
 
-A minimal personal profile / link-in-bio site, built on Cloudflare.
+A bilingual editorial profile platform built on Cloudflare Workers, D1 and R2. The project is implemented in staged milestones to keep the public experience separate from the private editorial workflow.
 
-## About
+## Stack
+- Cloudflare Workers for routing and server-side rendering/API delivery
+- D1 (SQLite) for profiles, sectors, consent records, audit events and requests
+- R2 for profile media (binding configured; upload workflow follows in the next implementation pass)
+- Hono for HTTP routing
+- Cloudflare Access JWT validation using `jose`
+- TypeScript, Wrangler and Vitest
 
-TheProfilez is a lightweight personal profile page. It's designed as a simple, fast, single-page presence you can point your bio links at.
+## Stage 1 included
+- Relational schema for bilingual profiles, sectors, audit log, contact messages, takedown requests and settings
+- SQLite FTS5 index and update triggers
+- Access JWT verification and optional email allowlist
+- CSRF double-submit token for admin mutations
+- Admin profile list and bilingual editor
+- Draft, publish, unpublish and soft-delete actions
+- Publish gate requiring complete EN/AR name, title and summary plus confirmed consent
+- Public JSON read endpoints that only expose published profiles with a complete requested-language version
+- Security headers and URL/text input handling
 
-## Tech stack
+## Local setup
+1. `npm install`
+2. Create a D1 database and R2 bucket, then configure `wrangler.jsonc`.
+3. Copy `.dev.vars.example` to `.dev.vars` and fill in local Access values.
+4. `npx wrangler d1 migrations apply theprofilez --local`
+5. `npm run dev`
 
-- [Cloudflare](https://cloudflare.com) — hosting (Workers / Pages)
-- [TypeScript](https://www.typescriptlang.org) — language
-- [Vitest](https://vitest.dev) — testing
-- [Wrangler](https://developers.cloudflare.com/workers/wrangler/) — development & deployment
+See [EDITOR_GUIDE.md](./EDITOR_GUIDE.md) for Cloudflare Access and editorial instructions.
 
-## Project structure
-
-```
-theprofilez/
-├── README.md
-├── wrangler.jsonc          # Cloudflare Workers configuration
-├── package.json            # Dependencies & scripts
-├── tsconfig.json           # TypeScript configuration
-├── vitest.config.ts        # Vitest configuration
-├── .dev.vars.example       # Example environment variables
-├── .gitignore              # Git ignore rules
-├── package-lock.json       # Locked dependency versions
-├── assets/                 # Static assets
-├── migrations/             # Database migrations
-├── seed/                   # Seed data
-└── src/                    # Source code
-    ├── index.ts            # Public entry point
-    ├── env.ts              # Environment bindings
-    ├── public/             # Public-facing routes
-    │   └── index.ts
-    ├── admin/              # Admin routes
-    │   ├── api.ts
-    │   └── routes.ts
-    └── lib/                # Shared libraries
-        ├── access-jwt.ts
-        ├── cache.ts
-        ├── csrf.ts
-        ├── db.ts
-        ├── headers.ts
-        ├── i18n.ts
-        ├── sanitize.ts
-        ├── slug.ts
-        └── validate.ts
-```
-
-## Getting started
-
-### Prerequisites
-
-- [Node.js](https://nodejs.org/) (LTS)
-- [pnpm](https://pnpm.io/) (recommended)
-- A [Cloudflare](https://cloudflare.com) account
-- [Wrangler](https://developers.cloudflare.com/workers/wrangler/install-and-update/)
-
-### Install
-
-```bash
-pnpm install
-```
-
-### Configure environment
-
-Copy the example environment file and fill in your values:
-
-```bash
-cp .dev.vars.example .dev.vars
-```
-
-### Develop locally
-
-```bash
-pnpm run dev
-```
-
-### Deploy
-
-```bash
-pnpm run deploy
-```
-
-### Run tests
-
-```bash
-pnpm run test
-```
-
-## License
-
-MIT
+## Deployment note
+The checked-in Wrangler configuration intentionally contains placeholders. Do not deploy until a real D1 database ID, Access team domain and Access application audience have been configured. The existing `main` branch remains untouched; implementation is on `feat/editorial-platform`.
