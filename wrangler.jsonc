@@ -21,7 +21,8 @@
   ],
   "vars": {
     "ACCESS_TEAM_DOMAIN": "REPLACE_WITH_TEAM.cloudflareaccess.com",
-    "ACCESS_AUD": "REPLACE_WITH_ACCESS_APPLICATION_AUD"
+    "ACCESS_AUD": "REPLACE_WITH_ACCESS_APPLICATION_AUD",
+    "ADMIN_HOST": "admin.theprofilez.com"
   },
   "observability": {
     "enabled": true
