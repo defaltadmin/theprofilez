@@ -21,13 +21,17 @@ function mockDb(profile: Record<string, unknown> | null = null) {
 }
 
 describe('public editorial pages', () => {
-  it('renders the English homepage', async () => {
+  it('renders the English homepage with canonical, Open Graph and alternate language metadata', async () => {
     const { db } = mockDb();
     const response = await site.request('/en', {}, { DB: db } as Env);
     const html = await response.text();
     expect(response.status).toBe(200);
     expect(html).toContain('Discover people shaping what comes next.');
     expect(html).toContain('THE<span>PROFILEZ</span>');
+    expect(html).toContain('<link rel="canonical" href="https://theprofilez.com/en">');
+    expect(html).toContain('property="og:image"');
+    expect(html).toContain('hreflang="ar"');
+    expect(html).toContain('application/ld+json');
   });
 
   it('renders Arabic with right-to-left document direction', async () => {
@@ -37,6 +41,25 @@ describe('public editorial pages', () => {
     expect(response.status).toBe(200);
     expect(html).toContain('<html lang="ar" dir="rtl">');
     expect(html).toContain('اكتشف الأشخاص الذين يصنعون ملامح المستقبل.');
+  });
+
+  it('serves robots rules and a share card', async () => {
+    const { db } = mockDb();
+    const robots = await site.request('/robots.txt', {}, { DB: db } as Env);
+    expect(await robots.text()).toContain('Sitemap: https://theprofilez.com/sitemap.xml');
+    const card = await site.request('/share-card.svg', {}, { DB: db } as Env);
+    expect(card.headers.get('content-type')).toContain('image/svg+xml');
+    expect(await card.text()).toContain('width="1200" height="630"');
+  });
+
+  it('serves XML sitemap and localized RSS feeds', async () => {
+    const { db } = mockDb();
+    const sitemap = await site.request('/sitemap.xml', {}, { DB: db } as Env);
+    expect(sitemap.headers.get('content-type')).toContain('application/xml');
+    expect(await sitemap.text()).toContain('hreflang="ar"');
+    const feed = await site.request('/ar/feed.xml', {}, { DB: db } as Env);
+    expect(feed.headers.get('content-type')).toContain('application/rss+xml');
+    expect(await feed.text()).toContain('<language>ar</language>');
   });
 
   it('returns a not-found page for an unpublished or missing profile', async () => {
