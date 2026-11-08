@@ -1,0 +1,4 @@
+ACCESS_TEAM_DOMAIN=your-team.cloudflareaccess.com
+ACCESS_AUD=your-cloudflare-access-audience
+ADMIN_EMAILS=admin@example.com
+TURNSTILE_SECRET=replace-me

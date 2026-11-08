@@ -1,0 +1,30 @@
+{
+  "name": "theprofilez",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-08",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "theprofilez",
+      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "theprofilez-media"
+    }
+  ],
+  "vars": {
+    "ACCESS_TEAM_DOMAIN": "REPLACE_WITH_TEAM.cloudflareaccess.com",
+    "ACCESS_AUD": "REPLACE_WITH_ACCESS_APPLICATION_AUD",
+    "ADMIN_HOST": "admin.theprofilez.com"
+  },
+  "observability": {
+    "enabled": true
+  }
+}

@@ -1,0 +1,4 @@
+CREATE VIRTUAL TABLE profiles_fts USING fts5(profile_id UNINDEXED,name_en,name_ar,title_en,title_ar,org_en,org_ar,summary_en,summary_ar,tokenize='unicode61');
+CREATE TRIGGER profiles_fts_insert AFTER INSERT ON profiles WHEN new.deleted_at IS NULL BEGIN INSERT INTO profiles_fts VALUES(new.id,new.name_en,new.name_ar,new.title_en,new.title_ar,new.org_en,new.org_ar,new.summary_en,new.summary_ar); END;
+CREATE TRIGGER profiles_fts_update AFTER UPDATE ON profiles BEGIN DELETE FROM profiles_fts WHERE profile_id=old.id; INSERT INTO profiles_fts SELECT new.id,new.name_en,new.name_ar,new.title_en,new.title_ar,new.org_en,new.org_ar,new.summary_en,new.summary_ar WHERE new.deleted_at IS NULL; END;
+CREATE TRIGGER profiles_fts_delete AFTER DELETE ON profiles BEGIN DELETE FROM profiles_fts WHERE profile_id=old.id; END;

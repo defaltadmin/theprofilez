@@ -1,94 +1,58 @@
 # TheProfilez
 
-A minimal personal profile / link-in-bio site, built on Cloudflare.
+A bilingual editorial profile platform built on Cloudflare Workers, D1 and R2. Implementation is delivered in staged milestones so the private editorial workflow can be reviewed before the public experience is built.
 
-## About
+## Stack
+- Cloudflare Workers and Hono for routing and API delivery
+- D1 for bilingual profiles, sectors, audit events, contact and takedown request records
+- R2 for profile photos
+- Cloudflare Access JWT verification with `jose`
+- TypeScript, Wrangler and Vitest
 
-TheProfilez is a lightweight personal profile page. It's designed as a simple, fast, single-page presence you can point your bio links at.
+## Stage 1 foundation
+- D1 relational schema, operational indexes and FTS5 search index
+- Eight fictional bilingual seed profiles, all drafts with consent disabled
+- Cloudflare Access JWT signature, issuer, audience and expiry verification
+- Required admin email allowlist (fails closed if not configured)
+- CSRF double-submit validation and baseline security headers
+- Admin profile list and bilingual editor with sector selection
+- Draft, publish, unpublish and soft-delete actions
+- Publish gate requiring EN/AR name, title, summary and a documented consent note
+- Automatic return to draft if an edit invalidates publish requirements
+- Client-side square crop and WebP conversion for profile photos
+- Server-side WebP signature and upload-size checks, R2 storage and authenticated upload route
+- Public JSON endpoints expose only published profiles with complete content in the requested language
 
-## Tech stack
+## Stage 2 public experience
+- Responsive editorial homepage with featured and recently published profiles
+- Bilingual English and Arabic routes with RTL layout for Arabic
+- Public profile detail pages with biographies, pull quotes, organisation, city and social links
+- Sector browsing and public search across names, titles, organisations and summaries
+- About, Contact, Privacy, Terms and profile-removal information pages
+- Public queries are restricted to published, non-archived profiles with complete content in the requested language
+- Public photo URLs use the existing published-profile-only media handler
 
-- [Cloudflare](https://cloudflare.com) — hosting (Workers / Pages)
-- [TypeScript](https://www.typescriptlang.org) — language
-- [Vitest](https://vitest.dev) — testing
-- [Wrangler](https://developers.cloudflare.com/workers/wrangler/) — development & deployment
+## Stage 3 discovery and sharing
+- Canonical URLs and English/Arabic hreflang alternates
+- Open Graph and Twitter card metadata
+- Schema.org WebSite and Person structured data
+- Dynamic XML sitemap and robots.txt
+- English and Arabic RSS feeds at /en/feed.xml and /ar/feed.xml
+- 1200 × 630 SVG social share card
 
-## Project structure
+The contact and profile-removal pages currently provide instructions rather than live submission forms. Privacy and terms copy is starter content and requires legal review. The share card is SVG; some social platforms prefer raster PNG/JPEG assets, so platform-specific preview validation is still required.
 
-```
-theprofilez/
-├── README.md
-├── wrangler.jsonc          # Cloudflare Workers configuration
-├── package.json            # Dependencies & scripts
-├── tsconfig.json           # TypeScript configuration
-├── vitest.config.ts        # Vitest configuration
-├── .dev.vars.example       # Example environment variables
-├── .gitignore              # Git ignore rules
-├── package-lock.json       # Locked dependency versions
-├── assets/                 # Static assets
-├── migrations/             # Database migrations
-├── seed/                   # Seed data
-└── src/                    # Source code
-    ├── index.ts            # Public entry point
-    ├── env.ts              # Environment bindings
-    ├── public/             # Public-facing routes
-    │   └── index.ts
-    ├── admin/              # Admin routes
-    │   ├── api.ts
-    │   └── routes.ts
-    └── lib/                # Shared libraries
-        ├── access-jwt.ts
-        ├── cache.ts
-        ├── csrf.ts
-        ├── db.ts
-        ├── headers.ts
-        ├── i18n.ts
-        ├── sanitize.ts
-        ├── slug.ts
-        └── validate.ts
-```
+## Local setup
+1. Install dependencies with `npm install`.
+2. Create a D1 database and R2 bucket, then configure `wrangler.jsonc`.
+3. Copy `.dev.vars.example` to `.dev.vars` and set local Access values.
+4. Apply schema migrations: `npx wrangler d1 migrations apply theprofilez --local`.
+5. Load fictional sample data: `npx wrangler d1 execute theprofilez --local --file=seed/seed.sql`.
+6. Start the Worker: `npm run dev`.
 
-## Getting started
+See [EDITOR_GUIDE.md](./EDITOR_GUIDE.md) for Access configuration and editorial instructions.
 
-### Prerequisites
+## Deployment note
+The checked-in Wrangler configuration intentionally contains placeholders. Do not deploy until a real D1 database ID, Access team domain, Access application audience and admin email allowlist have been configured. The `main` branch remains unchanged; implementation is on `feat/editorial-platform`.
 
-- [Node.js](https://nodejs.org/) (LTS)
-- [pnpm](https://pnpm.io/) (recommended)
-- A [Cloudflare](https://cloudflare.com) account
-- [Wrangler](https://developers.cloudflare.com/workers/wrangler/install-and-update/)
-
-### Install
-
-```bash
-pnpm install
-```
-
-### Configure environment
-
-Copy the example environment file and fill in your values:
-
-```bash
-cp .dev.vars.example .dev.vars
-```
-
-### Develop locally
-
-```bash
-pnpm run dev
-```
-
-### Deploy
-
-```bash
-pnpm run deploy
-```
-
-### Run tests
-
-```bash
-pnpm run test
-```
-
-## License
-
-MIT
+Stage 1 has not been deployed to a live Cloudflare account. Run the typecheck and test suite in the project environment before merging.
