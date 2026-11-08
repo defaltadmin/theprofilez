@@ -6,7 +6,7 @@ describe('input safety helpers', () => {
     expect(cleanText('  hello\u0000 world  ')).toBe('hello world');
   });
   it('preserves normal paragraph breaks', () => {
-    expect(cleanText('first line\\nsecond line')).toBe('first line\\nsecond line');
+    expect(cleanText('first line\nsecond line')).toBe('first line\nsecond line');
   });
   it('enforces the configured text length', () => {
     expect(cleanText('abcdef', 3)).toBe('abc');
