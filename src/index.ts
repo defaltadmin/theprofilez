@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
 import type { Env } from './env';
 import { adminAuth } from './lib/auth';
-import { securityHeaders, csrf, cleanText, safeUrl } from './lib/security';
+import { securityHeaders, csrf, cleanText, safeUrl, isWebpImage } from './lib/security';
 type Vars = { adminEmail: string };
 const app = new Hono<{ Bindings: Env; Variables: Vars }>();
 app.use('*', securityHeaders);
