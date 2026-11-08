@@ -1,0 +1,10 @@
+PUBLIC_HOST=localhost
+ADMIN_HOST=admin.localhost
+ACCESS_TEAM_DOMAIN=https://your-team.cloudflareaccess.com
+ACCESS_AUD=replace-with-access-audience
+ADMIN_EMAILS=
+DEV_AUTH_BYPASS=1
+DEV_USER_EMAIL=editor@example.test
+# Optional cache purge credentials (never commit actual values)
+# CF_ZONE_ID=
+# CF_API_TOKEN=
