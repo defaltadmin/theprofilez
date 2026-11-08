@@ -21,12 +21,12 @@ app.patch('/api/admin/profiles/:id', adminAuth, async c => { if (!csrf(c)) retur
 app.post('/api/admin/profiles/:id/photo',adminAuth,async c=>{
  if(!csrf(c))return c.json({error:'CSRF validation failed'},403);
  const id=c.req.param('id'); if(!/^[0-9a-f-]{36}$/i.test(id))return c.json({error:'Invalid profile ID'},400);
- const profile=await c.env.DB.prepare('SELECT id FROM profiles WHERE id=? AND deleted_at IS NULL').bind(id).first(); if(!profile)return c.json({error:'Profile not found'},404);
+ const profile=await c.env.DB.prepare('SELECT id,photo_key FROM profiles WHERE id=? AND deleted_at IS NULL').bind(id).first<{id:string;photo_key:string|null}>(); if(!profile)return c.json({error:'Profile not found'},404);
  const form=await c.req.formData().catch(()=>null); const file=form?.get('photo'); if(!(file instanceof File))return c.json({error:'Choose a WebP image to upload.'},400);
  if(file.size<16||file.size>3*1024*1024)return c.json({error:'The cropped image must be smaller than 3 MB.'},413);
  const bytes=new Uint8Array(await file.arrayBuffer()); const signature=String.fromCharCode(...bytes.slice(0,4)),format=String.fromCharCode(...bytes.slice(8,12)); if(signature!=='RIFF'||format!=='WEBP')return c.json({error:'Only valid WebP images are accepted.'},415);
  const key='profiles/'+id+'/photo-'+crypto.randomUUID()+'.webp'; await c.env.MEDIA.put(key,bytes,{httpMetadata:{contentType:'image/webp',cacheControl:'public, max-age=31536000, immutable'}});
- await c.env.DB.prepare('UPDATE profiles SET photo_key=?,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(key,id).run();
+ await c.env.DB.prepare('UPDATE profiles SET photo_key=?,updated_at=CURRENT_TIMESTAMP WHERE id=?').bind(key,id).run();if(profile?.photo_key&&profile.photo_key!==key)await c.env.MEDIA.delete(profile.photo_key);
  await c.env.DB.prepare("INSERT INTO audit_log(actor_email,action,entity_type,entity_id,details_json) VALUES(?,'photo_upload','profile',?,?)").bind(c.get('adminEmail'),id,JSON.stringify({key,bytes:file.size})).run();
  return c.json({ok:true,photo_url:'/media/'+id+'/'+key.split('/').pop(),photo_key:key});
 });
