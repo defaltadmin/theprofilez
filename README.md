@@ -23,7 +23,26 @@ A bilingual editorial profile platform built on Cloudflare Workers, D1 and R2. I
 - Server-side WebP signature and upload-size checks, R2 storage and authenticated upload route
 - Public JSON endpoints expose only published profiles with complete content in the requested language
 
-## Stage 2 public experience\n- Responsive editorial homepage with featured and recently published profiles\n- Bilingual English and Arabic routes with RTL layout for Arabic\n- Public profile detail pages with biographies, pull quotes, organisation, city and social links\n- Sector browsing and public search across names, titles, organisations and summaries\n- About, Contact, Privacy, Terms and profile-removal information pages\n- Public queries are restricted to published, non-archived profiles with complete content in the requested language\n- Public photo URLs use the existing published-profile-only media handler\n\nThe contact and profile-removal pages currently provide editorial instructions rather than a live submission workflow. The privacy and terms pages are starter copy and require legal review before launch.\n\n## Local setup
+## Stage 2 public experience
+- Responsive editorial homepage with featured and recently published profiles
+- Bilingual English and Arabic routes with RTL layout for Arabic
+- Public profile detail pages with biographies, pull quotes, organisation, city and social links
+- Sector browsing and public search across names, titles, organisations and summaries
+- About, Contact, Privacy, Terms and profile-removal information pages
+- Public queries are restricted to published, non-archived profiles with complete content in the requested language
+- Public photo URLs use the existing published-profile-only media handler
+
+## Stage 3 discovery and sharing
+- Canonical URLs and English/Arabic hreflang alternates
+- Open Graph and Twitter card metadata
+- Schema.org WebSite and Person structured data
+- Dynamic XML sitemap and robots.txt
+- English and Arabic RSS feeds at /en/feed.xml and /ar/feed.xml
+- 1200 × 630 SVG social share card
+
+The contact and profile-removal pages currently provide instructions rather than live submission forms. Privacy and terms copy is starter content and requires legal review. The share card is SVG; some social platforms prefer raster PNG/JPEG assets, so platform-specific preview validation is still required.
+
+## Local setup
 1. Install dependencies with `npm install`.
 2. Create a D1 database and R2 bucket, then configure `wrangler.jsonc`.
 3. Copy `.dev.vars.example` to `.dev.vars` and set local Access values.
